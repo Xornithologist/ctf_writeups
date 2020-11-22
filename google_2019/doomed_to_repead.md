@@ -7,7 +7,7 @@ at a time. Once you unveil to identical tiles in succession, they stay up.
 
 The goal is to find all pairs.
 
-![gameplay](pictures/gameplay.gif)
+![gameplay](pictures/game_play.gif)
 
 The caveat : there are 56 tiles and you can only use 60 moves. 
 
@@ -240,7 +240,7 @@ At this point, it's just a matter of trying the first four tiles, infering the
 correct game board, and then solve a game where we know the position of all tiles!
 
 
-![victory](pictures/victory.gif)
+![victory](pictures/victory_writeup.gif)
 Full python code : 
 
 ```
