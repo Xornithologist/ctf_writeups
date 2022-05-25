@@ -15,9 +15,9 @@ my.jpg.vft.enc Entropy = 7.984197 bits per byte.
 ogeliruhg.vbe Entropy = 5.157801 bits per byte.
 ```
 
-![](images/Pictures/10000201000002D6000000D858B81A222C218561.png) 
-
-*my.jpg.vft.enc has a very high entropy, there isn’t much we can do with it. Let’s focus on the vbe file.*
+| ![](images/Pictures/10000201000002D6000000D858B81A222C218561.png)  |
+|:--:| 
+|*my.jpg.vft.enc has a very high entropy, there isn’t much we can do with it. Let’s focus on the vbe file.*|
 
 It’s giberish, but mostly ASCII printable characters.
 
@@ -37,7 +37,9 @@ Step 2 : VBS
 The resultig VBS file is minified, but not really obfuscated. Formatting
 the code allows for a better understanding
 
-![](images/Pictures/10000201000004050000016C73BC030084287BC3.png) 
+| ![](images/Pictures/10000201000004050000016C73BC030084287BC3.png)  |
+|:--:| 
+||
 
 First of all, there is a flag being computed here on line 36 :
 
@@ -60,9 +62,9 @@ Path('bytes.txt').read_text().splitlines())
 Path('payload.bin').write_bytes(data)
 ```
 
-![](images/Pictures/10000201000002D3000000C3B5F4A2D056F5A3DF.png) 
-
-*A windows PE file*
+| ![](images/Pictures/10000201000002D3000000C3B5F4A2D056F5A3DF.png)  |
+|:--:| 
+|*A windows PE file*|
 
 VFT Crypter : Part 2 ( The Packer)
 ==================================
@@ -77,7 +79,9 @@ victim’s environment.
 
 We can use PE studio to look at the file structure.
 
-![](images/Pictures/10000201000003CE000001E155442D6EB1E15F58.png) 
+| ![](images/Pictures/10000201000003CE000001E155442D6EB1E15F58.png)  |
+|:--:| 
+||
 
 There are some anomalies : there is no .TEXT section, and we see the
 non-standard .LOV0 and .LOV1 section names. This is very reminiscent of
@@ -85,7 +89,9 @@ upx packer’s sections UPX0 and UPX1.
 
 We can confirm UPX by the indicator view in PE studio :
 
-![](images/Pictures/100002010000047F0000011A1758BC43C7D93F03.png) 
+| ![](images/Pictures/100002010000047F0000011A1758BC43C7D93F03.png)  |
+|:--:| 
+||
 
 Step 2: Unpacking
 -----------------
@@ -110,9 +116,9 @@ Here’s the overview :
 An in depth walkthrough can be found here :
 <https://infosecwriteups.com/how-to-unpack-upx-packed-malware-with-a-single-breakpoint-4d3a23e21332>
 
-![](images/Pictures/100002010000045E0000024418346CCB7A21E640.png) 
-
-*The far jump at the end of the UPX code. After this jump, we’re in the unpacked code!*
+| ![](images/Pictures/100002010000045E0000024418346CCB7A21E640.png)  |
+|:--:| 
+|*The far jump at the end of the UPX code. After this jump, we’re in the unpacked code!*|
 
 Step 3: A flag!
 ---------------
@@ -120,9 +126,9 @@ Step 3: A flag!
 Since we have now dumped an unpacked malware, we can load it in ghidra
 and start analyzing.
 
-![](images/Pictures/100002010000028100000165F40872F2379DE84F.png) 
-
-*We quickly find a flag getting written to memory byte by byte*
+| ![](images/Pictures/100002010000028100000165F40872F2379DE84F.png)  |
+|:--:| 
+|*We quickly find a flag getting written to memory byte by byte*|
 
 VFT Crypter : Part 3 ( The payload)
 ===================================
