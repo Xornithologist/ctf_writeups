@@ -1,4 +1,4 @@
-VFT Crypter : Part 1 ( The dropper)
+VFT Crypter : Part 1 (The dropper)
 ===================================
 
 We’re given two files, seemingly random. The challenge hints that one of
@@ -37,7 +37,7 @@ Step 2 : VBS
 The resultig VBS file is minified, but not really obfuscated. Formatting
 the code allows for a better understanding
 
-![](images/Pictures/10000201000004050000016C73BC030084287BC3.png){width="664" height="235"}
+![](images/Pictures/10000201000004050000016C73BC030084287BC3.png)
 
 First of all, there is a flag being computed here on line 36 :
 
@@ -60,7 +60,7 @@ Path('bytes.txt').read_text().splitlines())
 Path('payload.bin').write_bytes(data)
 ```
 
-![](images/Pictures/10000201000002D3000000C3B5F4A2D056F5A3DF.png){width="664" height="179"}
+![](images/Pictures/10000201000002D3000000C3B5F4A2D056F5A3DF.png)
  A windows PE file
 
 VFT Crypter : Part 2 ( The Packer)
@@ -76,7 +76,7 @@ victim’s environment.
 
 We can use PE studio to look at the file structure.
 
-![](images/Pictures/10000201000003CE000001E155442D6EB1E15F58.png){width="617" height="304"}
+![](images/Pictures/10000201000003CE000001E155442D6EB1E15F58.png)
 
 There are some anomalies : there is no .TEXT section, and we see the
 non-standard .LOV0 and .LOV1 section names. This is very reminiscent of
@@ -84,7 +84,7 @@ upx packer’s sections UPX0 and UPX1.
 
 We can confirm UPX by the indicator view in PE studio :
 
-![](images/Pictures/100002010000047F0000011A1758BC43C7D93F03.png){width="617" height="151"}
+![](images/Pictures/100002010000047F0000011A1758BC43C7D93F03.png)
 
 Step 2: Unpacking
 -----------------
@@ -109,7 +109,7 @@ Here’s the overview :
 An in depth walkthrough can be found here :
 <https://infosecwriteups.com/how-to-unpack-upx-packed-malware-with-a-single-breakpoint-4d3a23e21332>
 
-![](images/Pictures/100002010000045E0000024418346CCB7A21E640.png){width="664" height="344"} The far jump at the end of the UPX code. After this jump, we’re in the unpacked code!
+![](images/Pictures/100002010000045E0000024418346CCB7A21E640.png) The far jump at the end of the UPX code. After this jump, we’re in the unpacked code!
 
 Step 3: A flag!
 ---------------
@@ -117,7 +117,7 @@ Step 3: A flag!
 Since we have now dumped an unpacked malware, we can load it in ghidra
 and start analyzing.
 
-![](images/Pictures/100002010000028100000165F40872F2379DE84F.png){width="641" height="357"}We quickly find a flag getting written to memory byte by byte
+![](images/Pictures/100002010000028100000165F40872F2379DE84F.png)We quickly find a flag getting written to memory byte by byte
 
 VFT Crypter : Part 3 ( The payload)
 ===================================
@@ -138,7 +138,7 @@ Every call to a windows API in the program is obfuscated with API
 hashing. This is quite annoying, but worse, is that the hashing and API
 resolution is done inline, making simple functions look very complex
 
-![](images/Pictures/10000201000003490000030A3D79127D5D7E817B.png){width="664" height="614"}A single call to SHGetFolderPathA
+![](images/Pictures/10000201000003490000030A3D79127D5D7E817B.png)A single call to SHGetFolderPathA
 
 The API hashing algorithm is quite simple, but because each hash is
 computed with a different seed value, automating the lookups is
@@ -167,7 +167,7 @@ Anti analysis : Environment detection.
 First, the username must be `rtavolo`. We can see here the call to StrStrA
 that checks that `rtavolo` is within the user’s home path string
 
-![](images/Pictures/10000201000003C30000016764BDF580D3CD69DA.png){width="664" height="247"}
+![](images/Pictures/10000201000003C30000016764BDF580D3CD69DA.png)
 
 We can defeat this by putting a breakpoint after the call and altering
 the vale of EAX to 1. Alternatively, we can patch the call with a `MOV EAX, 1`
@@ -183,7 +183,7 @@ another use : every filepath encountered is compared against a series of
 strings that would be found in an analysis environement (like, say, a
 flare VM like mine.)
 
-![](images/Pictures/100002010000019F0000004FC11DBD26F795C478.png){width="414" height="78"}
+![](images/Pictures/100002010000019F0000004FC11DBD26F795C478.png)
 
 If any of the following strings are found, the `_HAS_ANALYSIS_TOOLS` var
 won’t be zero, and the program will shutdown.
@@ -203,7 +203,7 @@ ssql
 Once again, this can be defeated by modifying the execution flow. Here
 we set the ZF to 1, to ensure the conditional jump is not taken
 
-![](images/Pictures/100002010000040400000065FBAD8FEEED4E2841.png){width="664" height="65"}
+![](images/Pictures/100002010000040400000065FBAD8FEEED4E2841.png)
 
 Crypto
 ------
@@ -215,13 +215,13 @@ reversed
 Since we can encrypt arbitrary files at this point, we played a bit with
 the program and let it encrypt various crafted plain texts
 
-![](images/Pictures/10000201000005410000016755ED40D3A6D287DC.png){width="664" height="177"}The same file, consisting of only \\x00 encrypted twice.  The use of random bytes is obvious 
-![](images/Pictures/10000201000005320000016675C4447107436025.png){width="664" height="178"}Plaintext on the left, ciphertext on the right. there’s more to this than a simple xor, though we can see that repeating data
+![](images/Pictures/10000201000005410000016755ED40D3A6D287DC.png)The same file, consisting of only \\x00 encrypted twice.  The use of random bytes is obvious 
+![](images/Pictures/10000201000005320000016675C4447107436025.png)Plaintext on the left, ciphertext on the right. there’s more to this than a simple xor, though we can see that repeating data
 gives a repeating pattern
 
 Let’s look at the encryption algorithm
 
-![](images/Pictures/10000201000002390000022A08F5393FB627CC28.png){width="569" height="554"}The crypt loop
+![](images/Pictures/10000201000002390000022A08F5393FB627CC28.png)The crypt loop
 
 The sample has a hardcoded key that gets populated at `0x0f01238`. It
 generates an 8 byte key from the the first 4 bytes of clear text,
