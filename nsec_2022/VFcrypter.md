@@ -16,6 +16,7 @@ ogeliruhg.vbe Entropy = 5.157801 bits per byte.
 ```
 
 ![](images/Pictures/10000201000002D6000000D858B81A222C218561.png) 
+
 *my.jpg.vft.enc has a very high entropy, there isn’t much we can do with it. Let’s focus on the vbe file.*
 
 It’s giberish, but mostly ASCII printable characters.
@@ -61,7 +62,7 @@ Path('payload.bin').write_bytes(data)
 
 ![](images/Pictures/10000201000002D3000000C3B5F4A2D056F5A3DF.png) 
 
- A windows PE file
+*A windows PE file*
 
 VFT Crypter : Part 2 ( The Packer)
 ==================================
@@ -110,6 +111,7 @@ An in depth walkthrough can be found here :
 <https://infosecwriteups.com/how-to-unpack-upx-packed-malware-with-a-single-breakpoint-4d3a23e21332>
 
 ![](images/Pictures/100002010000045E0000024418346CCB7A21E640.png) 
+
 *The far jump at the end of the UPX code. After this jump, we’re in the unpacked code!*
 
 Step 3: A flag!
@@ -119,6 +121,7 @@ Since we have now dumped an unpacked malware, we can load it in ghidra
 and start analyzing.
 
 ![](images/Pictures/100002010000028100000165F40872F2379DE84F.png) 
+
 *We quickly find a flag getting written to memory byte by byte*
 
 VFT Crypter : Part 3 ( The payload)
@@ -141,6 +144,7 @@ hashing. This is quite annoying, but worse, is that the hashing and API
 resolution is done inline, making simple functions look very complex
 
 ![](images/Pictures/10000201000003490000030A3D79127D5D7E817B.png) 
+
 *A single call to SHGetFolderPathA*
 
 The API hashing algorithm is quite simple, but because each hash is
@@ -220,16 +224,19 @@ Since we can encrypt arbitrary files at this point, we played a bit with
 the program and let it encrypt various crafted plain texts
 
 ![](images/Pictures/10000201000005410000016755ED40D3A6D287DC.png) 
+
 *The same file, consisting of only \\x00 encrypted twice.  The use of random bytes is obvious*
 
 
 ![](images/Pictures/10000201000005320000016675C4447107436025.png) 
+
 *Plaintext on the left, ciphertext on the right. there’s more to this than a simple xor, though we can see that repeating data*
 
 
 Let’s look at the encryption algorithm
 
 ![](images/Pictures/10000201000002390000022A08F5393FB627CC28.png) 
+
 *The crypt loop*
 
 The sample has a hardcoded key that gets populated at `0x0f01238`. It
@@ -282,4 +289,5 @@ Path('out.jpg').write_bytes(cleartext)
 ```
 
 ![](images/Pictures/10000201000001B50000029B418EB68F52B5AF9D.png) 
+
 *Success!*
