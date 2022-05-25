@@ -143,9 +143,10 @@ Every call to a windows API in the program is obfuscated with API
 hashing. This is quite annoying, but worse, is that the hashing and API
 resolution is done inline, making simple functions look very complex
 
-![](images/Pictures/10000201000003490000030A3D79127D5D7E817B.png) 
 
-*A single call to SHGetFolderPathA*
+| ![](images/Pictures/10000201000003490000030A3D79127D5D7E817B.png)  |
+|:--:| 
+|*A single call to SHGetFolderPathA*|
 
 The API hashing algorithm is quite simple, but because each hash is
 computed with a different seed value, automating the lookups is
@@ -174,7 +175,9 @@ Anti analysis : Environment detection.
 First, the username must be `rtavolo`. We can see here the call to StrStrA
 that checks that `rtavolo` is within the user’s home path string
 
-![](images/Pictures/10000201000003C30000016764BDF580D3CD69DA.png) 
+| ![](images/Pictures/10000201000003C30000016764BDF580D3CD69DA.png)  |
+|:--:| 
+||
 
 We can defeat this by putting a breakpoint after the call and altering
 the vale of EAX to 1. Alternatively, we can patch the call with a `MOV EAX, 1`
@@ -190,8 +193,9 @@ another use : every filepath encountered is compared against a series of
 strings that would be found in an analysis environement (like, say, a
 flare VM like mine.)
 
-![](images/Pictures/100002010000019F0000004FC11DBD26F795C478.png) 
-
+| ![](images/Pictures/100002010000019F0000004FC11DBD26F795C478.png)  |
+|:--:| 
+||
 If any of the following strings are found, the `_HAS_ANALYSIS_TOOLS` var
 won’t be zero, and the program will shutdown.
 
@@ -210,8 +214,9 @@ ssql
 Once again, this can be defeated by modifying the execution flow. Here
 we set the ZF to 1, to ensure the conditional jump is not taken
 
-![](images/Pictures/100002010000040400000065FBAD8FEEED4E2841.png) 
-
+| ![](images/Pictures/100002010000040400000065FBAD8FEEED4E2841.png)  |
+|:--:| 
+||
 
 Crypto
 ------
@@ -223,21 +228,21 @@ reversed
 Since we can encrypt arbitrary files at this point, we played a bit with
 the program and let it encrypt various crafted plain texts
 
-![](images/Pictures/10000201000005410000016755ED40D3A6D287DC.png) 
+| ![](images/Pictures/10000201000005410000016755ED40D3A6D287DC.png)  |
+|:--:| 
+|*The same file, consisting of only \\x00 encrypted twice.  The use of random bytes is obvious*|
 
-*The same file, consisting of only \\x00 encrypted twice.  The use of random bytes is obvious*
 
-
-![](images/Pictures/10000201000005320000016675C4447107436025.png) 
-
-*Plaintext on the left, ciphertext on the right. there’s more to this than a simple xor, though we can see that repeating data*
+| ![](images/Pictures/10000201000005320000016675C4447107436025.png)  |
+|:--:| 
+|*Plaintext on the left, ciphertext on the right. there’s more to this than a simple xor, though we can see that repeating data*|
 
 
 Let’s look at the encryption algorithm
 
-![](images/Pictures/10000201000002390000022A08F5393FB627CC28.png) 
-
-*The crypt loop*
+| ![](images/Pictures/10000201000002390000022A08F5393FB627CC28.png)  |
+|:--:| 
+|*The crypt loop*|
 
 The sample has a hardcoded key that gets populated at `0x0f01238`. It
 generates an 8 byte key from the the first 4 bytes of clear text,
@@ -288,6 +293,6 @@ hexdump(cleartext[:256])
 Path('out.jpg').write_bytes(cleartext)
 ```
 
-![](images/Pictures/10000201000001B50000029B418EB68F52B5AF9D.png) 
-
-*Success!*
+| ![](images/Pictures/10000201000001B50000029B418EB68F52B5AF9D.png)  |
+|:--:| 
+|*Success!*|
