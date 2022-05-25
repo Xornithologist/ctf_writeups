@@ -14,12 +14,13 @@ We have two files :
 my.jpg.vft.enc Entropy = 7.984197 bits per byte.
 ogeliruhg.vbe Entropy = 5.157801 bits per byte.
 ```
+my.jpg.vft.enc has a very high entropy, there isn’t much we can do with it. Let’s focus on the vbe file.
 
 | ![](images/Pictures/10000201000002D6000000D858B81A222C218561.png)  |
 |:--:| 
-|*my.jpg.vft.enc has a very high entropy, there isn’t much we can do with it. Let’s focus on the vbe file.*|
+|*It’s giberish, but mostly ASCII printable characters.*|
 
-It’s giberish, but mostly ASCII printable characters.
+
 
 Running the VBE file does nothing, there must be some environment checks
 in it to ensure it will only execute on the victim’s machine.
