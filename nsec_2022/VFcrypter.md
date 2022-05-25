@@ -39,7 +39,7 @@ the code allows for a better understanding
 
 | ![](images/Pictures/10000201000004050000016C73BC030084287BC3.png)  |
 |:--:| 
-||
+|*the dumped script*|
 
 First of all, there is a flag being computed here on line 36 :
 
@@ -66,6 +66,9 @@ Path('payload.bin').write_bytes(data)
 |:--:| 
 |*A windows PE file*|
 
+
+
+---
 VFT Crypter : Part 2 ( The Packer)
 ==================================
 
@@ -81,7 +84,7 @@ We can use PE studio to look at the file structure.
 
 | ![](images/Pictures/10000201000003CE000001E155442D6EB1E15F58.png)  |
 |:--:| 
-||
+|*Weird Section Names*|
 
 There are some anomalies : there is no .TEXT section, and we see the
 non-standard .LOV0 and .LOV1 section names. This is very reminiscent of
@@ -91,7 +94,7 @@ We can confirm UPX by the indicator view in PE studio :
 
 | ![](images/Pictures/100002010000047F0000011A1758BC43C7D93F03.png)  |
 |:--:| 
-||
+|*UPX*|
 
 Step 2: Unpacking
 -----------------
@@ -130,6 +133,9 @@ and start analyzing.
 |:--:| 
 |*We quickly find a flag getting written to memory byte by byte*|
 
+
+
+---
 VFT Crypter : Part 3 ( The payload)
 ===================================
 
@@ -183,7 +189,7 @@ that checks that `rtavolo` is within the user’s home path string
 
 | ![](images/Pictures/10000201000003C30000016764BDF580D3CD69DA.png)  |
 |:--:| 
-||
+|*Calls to StrStrA ensuring `rtavolo` is a substring of the path*|
 
 We can defeat this by putting a breakpoint after the call and altering
 the vale of EAX to 1. Alternatively, we can patch the call with a `MOV EAX, 1`
@@ -201,7 +207,7 @@ flare VM like mine.)
 
 | ![](images/Pictures/100002010000019F0000004FC11DBD26F795C478.png)  |
 |:--:| 
-||
+|*sets value if analysis tools are found*|
 If any of the following strings are found, the `_HAS_ANALYSIS_TOOLS` var
 won’t be zero, and the program will shutdown.
 
@@ -222,7 +228,7 @@ we set the ZF to 1, to ensure the conditional jump is not taken
 
 | ![](images/Pictures/100002010000040400000065FBAD8FEEED4E2841.png)  |
 |:--:| 
-||
+|*checks the value set precedently*|
 
 Crypto
 ------
