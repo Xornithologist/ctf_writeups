@@ -58,8 +58,7 @@ To rebuild it, we can format the numbers and write a little bit a python
 to conver the ints to a binary file
 
 ```python
-data = bytes(int(x) for x in
-Path('bytes.txt').read_text().splitlines())
+data = bytes(int(x) for x in Path('bytes.txt').read_text().splitlines())
 Path('payload.bin').write_bytes(data)
 ```
 
