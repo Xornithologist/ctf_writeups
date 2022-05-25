@@ -55,7 +55,7 @@ We can also see a large byte array being created at line 43. The first
 two bytes, (77, 90) decode to “MZ” : This is a windows PE (exe) file.
 
 To rebuild it, we can format the numbers and write a little bit a python
-to conver the ints to
+to conver the ints to a binary file
 
 ```python
 data = bytes(int(x) for x in
