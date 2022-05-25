@@ -101,7 +101,7 @@ Step 2: Unpacking
 
 UPX is not meant as a malware packer, and can be easily unpacked
 statically using the UPX executable. However, it’s not that easy here.
-Since we are dealing with a modified version, unpaking fails\
+Since we are dealing with a modified version, unpaking fails.
 
 We could rename the sections so that they match the original UPX
 sections names and hope for the best, but we don’t know the extent of
@@ -208,6 +208,8 @@ flare VM like mine.)
 | ![](images/Pictures/100002010000019F0000004FC11DBD26F795C478.png)  |
 |:--:| 
 |*sets value if analysis tools are found*|
+
+
 If any of the following strings are found, the `_HAS_ANALYSIS_TOOLS` var
 won’t be zero, and the program will shutdown.
 
