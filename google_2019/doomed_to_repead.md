@@ -5,7 +5,7 @@
 We have a classic game of memory, where you can only see one tile 
 at a time. Once you unveil to identical tiles in succession, they stay up.
 
-The goal is to find all pairs.
+The goal is to find all pairs. We have the source code, but it runs on a server we don't control. We'll get a flag simply by winning the game
 
 ![gameplay](pictures/game_play.gif)
 
