@@ -25,7 +25,7 @@ the custom RNG. after examination, turns out there is a problem with the impleme
 ### Bad RNG
 
 This function is used to get random bits from the os in order to generate a seed.
-```
+```golang
 // OsRand gets some randomness from the OS.
 func OsRand() (uint64, error) {
 	// 64 ought to be enough for anybody
@@ -73,7 +73,7 @@ and that's totally manageable.
 This is pretty easy to test : if we patch the OsRand function and replace the 
 "pregenerated randomness" with an even bigger power of two : 
 
-```
+```golang
 func OsRand() (uint64, error) {
 	// 64 ought to be enough for anybody
 	var res uint64
@@ -102,7 +102,7 @@ This will generate all possible numbers between that have their 47 least signifi
 bits set to zero, and use each of them as a source of entropy for the seed to generate one
 board.
 
-```
+```golang
 func newBoard() (*board, error) {
 
         var b *board
@@ -143,7 +143,7 @@ func newBoard() (*board, error) {
 We modify the New function so that it uses our specially crafted uint64 
 instead of the OSrand function
 
-```
+```golang
 func New(proto_seed uint64 ) (*Rand, error) {
 	// osr, err := OsRand()
 	// if err != nil {
@@ -164,7 +164,7 @@ with a little bit of parsing, we can get them in a nice format :
 
 
 A little python script will load them all in an dictionnary, with the first 4 tiles as key : 
-```
+```python
 
 BOARD_FILE = 'boards.txt'
 
@@ -187,7 +187,7 @@ def get_all(key):
 
 This gives us a simple API to query the list of boards. for instance, this will get us all
 boards that have the following tiles starting top left corner `2,43,21,23`
-```
+```python
 boards.init()
 boards.get_all( (2,43,21,23) )
 ``` 
@@ -207,7 +207,7 @@ some important points to note :
 
 ### Connect to the game server
 This piece of (asyncio) code will connect:
-``` 
+```python
     async with websockets.client.connect(
             URI,
             origin='https://doomed.web.ctfcompetition.com') as ws:
@@ -217,7 +217,7 @@ This piece of (asyncio) code will connect:
 ### Play a game
 These co-routines can be used to initiate the game state and send some guesses
 
-```
+```python
 async def get_info(ws):
 
     qry = {"op":"info"}
@@ -243,7 +243,7 @@ correct game board, and then solve a game where we know the position of all tile
 ![victory](pictures/victory_writeup.gif)
 Full python code : 
 
-```
+```python
 
 #!/usr/bin/env python3
 
