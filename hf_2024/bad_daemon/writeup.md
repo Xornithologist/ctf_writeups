@@ -4,7 +4,7 @@
 
 We hare presented with an ELF file called bad_daemon
 
-When ran, we see the following licencing screen. 
+When ran, we see the following licencing screen.
 
 ![fig_1](pictures/fig_1.png)
 
@@ -15,19 +15,19 @@ Since we have none of the information, we can jump into reversing
 
 Looking at strings, it is pretty obvious this is a pyinstaller binary. These can be easily dumped with [pyinsxtractor](https://github.com/extremecoders-re/pyinstxtractor).
 
-This yields several files : 
+This yields several files :
 ```
-badApp.pyc			         base_library.zip
-ld-linux-x86-64.so.2		 libbrlapi.so.0.8
-libbrotlicommon.so.1		 libbrotlidec.so.1
-libbz2.so.1.0			       libcap.so.2
-libcrypto.so.3			     lib-dynload
-libexpat.so.1			       libffi.so.8
+badApp.pyc                   base_library.zip
+ld-linux-x86-64.so.2         libbrlapi.so.0.8
+libbrotlicommon.so.1         libbrotlidec.so.1
+libbz2.so.1.0                libcap.so.2
+libcrypto.so.3               lib-dynload
+libexpat.so.1                libffi.so.8
 (...)
-PYZ-00.pyz			         PYZ-00.pyz_extracted
-setuptools			         struct.pyc
-tcl8				             _tcl_data
-_tk_data			           ttkthemes
+PYZ-00.pyz                   PYZ-00.pyz_extracted
+setuptools                   struct.pyc
+tcl8                         _tcl_data
+_tk_data                     ttkthemes
 
 ```
 
@@ -58,27 +58,27 @@ This is a problem, since the byte code has changed significantly post 3.11, and 
 
 Now, this can be worked around by using the online service [pylingual](https://pylingual.io/)
 
-We get a mock Tkinter app, that only prompts for a licence, with the following code pertaining to the licencing. 
+We get a mock Tkinter app, that only prompts for a licence, with the following code pertaining to the licencing.
 
 ```python
 @staticmethod
 def validate_user_id(user_id):
-	return bool(re.match('^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z0-9]{4,10}$', user_id))
+  return bool(re.match('^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z0-9]{4,10}$', user_id))
 
 @staticmethod
 def validate_product_id(product_id):
-	return bool(re.match('^\\d{8}$', product_id))
+  return bool(re.match('^\\d{8}$', product_id))
 
 @staticmethod
 def generate_license_key(user_id, product_id):
-	try:
-		data = f'{user_id}-{product_id}'
-		license_key = hashlib.sha256(data.encode()).hexdigest()[:22]
-		excluded_chars = {'o', '1', '0', 'O', 'l'}
-		valid_key = ''.join((c if c not in excluded_chars else 'x' for c in license_key))
-		return valid_key
-	except Exception as e:
-		messagebox.showerror('Error', f'Error generating license key: {e}')
+  try:
+    data = f'{user_id}-{product_id}'
+    license_key = hashlib.sha256(data.encode()).hexdigest()[:22]
+    excluded_chars = {'o', '1', '0', 'O', 'l'}
+    valid_key = ''.join((c if c not in excluded_chars else 'x' for c in license_key))
+    return valid_key
+  except Exception as e:
+    messagebox.showerror('Error', f'Error generating license key: {e}')
 ```
 
 
@@ -100,11 +100,11 @@ The license key serves as the flag.
 
 ## Challenge 2
 
-Challenge 2 starts with a very similar app. After unpacking the app as in challenge 1, we have two new things : 
+Challenge 2 starts with a very similar app. After unpacking the app as in challenge 1, we have two new things :
 
 1. an ELF file called bad_daemon
 2. a `.service` file, bad_daemon.service
-3. a modified `badApp.pyc. Added to the functionality of part 1, it now also installes the ELF file as a service. 
+3. a modified `badApp.pyc. Added to the functionality of part 1, it now also installes the ELF file as a service.
 
 
 
@@ -115,7 +115,7 @@ void main(void)
 
 {
   SHARED_MEM *shared_mem;
-  
+
   daemonize();
   openlog("bad_daemon",1,0x18);
   shared_mem = (SHARED_MEM *)setup_shared_memory();
@@ -130,13 +130,13 @@ void main(void)
     sleep(5);
   } while( true );
 ```
-We can see in the main that the program `daemonize`, whatever that means (mostly spawning child processes), setups a shared memory object, a mutex, then starts calling `process_cycle` in a loop. 
+We can see in the main that the program `daemonize`, whatever that means (mostly spawning child processes), setups a shared memory object, a mutex, then starts calling `process_cycle` in a loop.
 
 the `shared_mem` buffer gets passed along everywhere in the program
 
 
 ### Encryption
-down the line, deeper in that `process_cycle` method, we have the decryption of what is probably a flag : 
+down the line, deeper in that `process_cycle` method, we have the decryption of what is probably a flag :
 
 ```C
 void shaboiinnk(char *flag_data,ulong len,int xor_key)
@@ -144,7 +144,7 @@ void shaboiinnk(char *flag_data,ulong len,int xor_key)
 {
   char new_val;
   ulong i;
-  
+
   for (i = 0; i < len; i = i + 1) {
     new_val = bing(flag_data[i],xor_key % 8);
     flag_data[i] = new_val;=
@@ -167,7 +167,7 @@ However, because all of this decrypton happens in a rather complex dance of 5 ch
 // The code calling the decryption method
 void process_operation(SHARED_MEM *shared_mem,int fork_count) {
   undefined4 sleep_time;
-  
+
   pthread_mutex_lock(&shared_mem->mutex);
   if (fork_count == 5) {
     sleep_time = 10;
@@ -194,14 +194,14 @@ Now this turned out to be a bit of a mistake, my gdb skills are not that good, a
 
 ### Solution
 
-The simpler approach was to write a small program that, in a loop, every second, would mount that shared memory and read it. 
+The simpler approach was to write a small program that, in a loop, every second, would mount that shared memory and read it.
 
 To force the decryption the first byte in the shared memory is overwritten with `0x42`. This is because, as can be seen in the `process_operation`, the `shaboiink` decryption method is only called when that value (`show_unlock` in the decompilation) is set, and nothing sets it in the program. I assume this is a guard against naive memory dumping
 
 
 ```C
 #include <sys/mman.h>
-#include <sys/stat.h> 
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -213,32 +213,32 @@ int main(int argc, char *argv[]) {
   char * shared_mem;
 
   while(1){
-	  HNDL_shared = shm_open("/bad_daemon",0x42,0x1b6);
+    HNDL_shared = shm_open("/bad_daemon",0x42,0x1b6);
 
-	  if (HNDL_shared == -1) {
-			continue;
-	
-	  }
-	  iVar1 = ftruncate(HNDL_shared,0x1000);
+    if (HNDL_shared == -1) {
+      continue;
 
-	  if (iVar1 == -1) {
-			close(HNDL_shared);
-			continue;
-	  }
+    }
+    iVar1 = ftruncate(HNDL_shared,0x1000);
 
-	  shared_mem = mmap(0,0x1000,3,1,HNDL_shared,0);
-	  shared_mem[0] = 0x42;
-	  printf("%.*s\n",0x80,shared_mem + 0x20);
-	  fwrite(shared_mem,1,0x80,stdout);
+    if (iVar1 == -1) {
+      close(HNDL_shared);
+      continue;
+    }
 
-	  close(HNDL_shared);
-	  sleep(1);
+    shared_mem = mmap(0,0x1000,3,1,HNDL_shared,0);
+    shared_mem[0] = 0x42;
+    printf("%.*s\n",0x80,shared_mem + 0x20);
+    fwrite(shared_mem,1,0x80,stdout);
+
+    close(HNDL_shared);
+    sleep(1);
   }
 }
 ```
 
-This is a much simpler solution, as most of the code required for this is already available in the decompilation. 
+This is a much simpler solution, as most of the code required for this is already available in the decompilation.
 
-After a little bit of run time, we get the flag. 
+After a little bit of run time, we get the flag.
 
 
