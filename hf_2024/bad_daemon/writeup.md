@@ -51,8 +51,8 @@ As always, the first two bytes are used to identify which version of the python 
 In [1]: struct.unpack('<H', bytes.fromhex('cb0d'))
 Out[1]: (3531,)
 ```
-
-which identifies as `Python 3.12b1 3531 (Add PEP 695 changes)`.
+The cpython repo has [documentation for all of the possible values](https://github.com/python/cpython/blob/3.13/Lib/importlib/_bootstrap_external.py)
+In our cases, it identifies as `Python 3.12b1 3531 (Add PEP 695 changes)`.
 
 This is a problem, since the byte code has changed significantly post 3.11, and the tooling has not kept up to date. The traditional `uncompyle6` library doesn't work with a version that recent.
 
@@ -83,7 +83,7 @@ def generate_license_key(user_id, product_id):
 
 
 ### Solution
-which this, it is pretty easy to craft a valid user and product_id. Whe can then proceed to generate a valid licence key
+With this, it is pretty easy to craft a valid user and product_id. Whe can then proceed to generate a valid licence key
 
 ```python
 def generate_license_key(user_id, product_id):
@@ -136,7 +136,7 @@ the `shared_mem` buffer gets passed along everywhere in the program
 
 
 ### Encryption
-down the line, deeper in that `process_cycle` method, we have the decryption of what is probably a flag :
+Down the line, deeper in that `process_cycle` method, we have the decryption of what is probably a flag :
 
 ```C
 void shaboiinnk(char *flag_data,ulong len,int xor_key)
