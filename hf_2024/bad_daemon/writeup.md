@@ -2,18 +2,18 @@
 
 ## Challenge 1
 
-We hare presented with an ELF file called bad_daemon
+We are presented with an ELF file called `bad_daemon`
 
 When ran, we see the following licencing screen.
 
 ![fig_1](pictures/fig_1.png)
 
-Since we have none of the information, we can jump into reversing
+Since we have none of the information required here, we can jump into reversing
 
 
 ### Reversing the App
 
-Looking at strings, it is pretty obvious this is a pyinstaller binary. These can be easily dumped with [pyinsxtractor](https://github.com/extremecoders-re/pyinstxtractor).
+Looking at the strings, it is pretty obvious this is a pyinstaller binary. These can be easily dumped with [pyinsxtractor](https://github.com/extremecoders-re/pyinstxtractor).
 
 This yields several files :
 ```
@@ -32,7 +32,6 @@ _tk_data                     ttkthemes
 ```
 
 Most of this comes from various libraries installed That are used by the python app. One stands out as the main file : `badApp.pyc`
-
 
 This is a `pyc` file, containing only python bytecode
 
@@ -163,7 +162,7 @@ Now this would be pretty simple, except that `bing`, `bang` and `bong` all add s
 However, because all of this decrypton happens in a rather complex dance of 5 child processes that sleep different amount of time, I decided to whip out GDB
 
 
-```
+```C
 // The code calling the decryption method
 void process_operation(SHARED_MEM *shared_mem,int fork_count) {
   undefined4 sleep_time;
@@ -187,7 +186,7 @@ void process_operation(SHARED_MEM *shared_mem,int fork_count) {
   pthread_mutex_unlock(&shared_mem->mutex);
   return;
 }
-
+```
 
 
 Now this turned out to be a bit of a mistake, my gdb skills are not that good, and trying to wrangle it through 5 child processes did not prove fruitful. I eventually decided a different approach.
