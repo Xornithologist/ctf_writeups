@@ -2,7 +2,7 @@
 
 ## Challenge 1
 
-We are presented with an ELF file called `bad_daemon`
+We are presented with an ELF file called `badApp`
 
 When ran, we see the following licencing screen.
 
@@ -101,8 +101,8 @@ The license key serves as the flag.
 
 Challenge 2 starts with a very similar app. After unpacking the app as in challenge 1, we have two new things :
 
-1. an ELF file called bad_daemon
-2. a `.service` file, bad_daemon.service
+1. an ELF file called `bad_daemon`
+2. a `.service` file, `bad_daemon.service`
 3. a modified `badApp.pyc. Added to the functionality of part 1, it now also installes the ELF file as a service.
 
 
